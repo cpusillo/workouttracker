@@ -1,8 +1,9 @@
 const express = require("express");
-const mongojs = require("mongojs");
 const logger = require("morgan");
+const mongoose = require("mongoose");
 var path = require('path');
 
+const db = require("./models");
 
 const app = express();
 
@@ -13,49 +14,54 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-const databaseUrl = "workouttracker";
-const collections = ["workouts"];
-
-const db = mongojs(databaseUrl, collections);
-
-db.on("error", error => {
-  console.log("Database Error:", error);
-});
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutsdb", { useNewUrlParser: true });
 
 // Serve our root route
 app.get("/", (req, res) => {
   res.send(index.html);
 });
 
-// Server our exercise route
+// Serve our exercise route
 app.get("/exercise", (req, res) => {
   res.sendFile(path.join(__dirname, "public/exercise.html"));
 });
 
+// Serve our stats route
 app.get("/stats", (req, res) => {
   res.sendFile(path.join(__dirname, "public/stats.html"));
 });
 
-// Show all workouts in the database
+// Show all workouts
 app.get("/api/workouts", (req, res) => {
-  db.workouts.find({}, (err,data) => {
-    if (err) console.log(err);
-    res.json(data);
+  db.Exercise.find({}).then(data => {
+      res.json(data);
+  })
+  .catch(err => {
+      console.log(err)
   });
 })
 
-// Insert an entry into the database
-app.post("/api/workouts", ({ body }, res) => {
-  // Save the request body as an object called book
-   const exercise = body; // This includes the title and the author and the created
-  db.workouts.insert(exercise, (err, data) => {
-    if (err) console.log(err);
-    res.json(exercise)
-});
+// Insert a workout
+app.post("/api/workouts", ({ body },res) => {
+  db.Exercise.create(body).then((data) => {
+    res.json(data);
+  }).catch(err => {
+      console.log(err);
+    });
+})
+
+// Make an update to the current _id
+app.put("/api/workouts/:id", (req, res) => {
+  db.Exercise.findByIdAndUpdate(
+    { _id: req.params.id }, { exercises: req.body }
+  ).then((data) => { 
+    res.json(data);
+  }).catch(err => { 
+    console.log(err)
+  });
 });
 
-
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log("App running on port 3000!");
   });
   
