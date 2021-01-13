@@ -1,6 +1,8 @@
 const express = require("express");
 const mongojs = require("mongojs");
 const logger = require("morgan");
+var path = require('path');
+
 
 const app = express();
 
@@ -24,6 +26,9 @@ app.get("/", (req, res) => {
   res.send(index.html);
 });
 
+app.get("/exercise", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/exercise.html"));
+})
 
 app.listen(3000, () => {
     console.log("App running on port 3000!");
