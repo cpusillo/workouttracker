@@ -14,3 +14,13 @@ The application allows a user to:
 * Select between Cardio or Resistance workouts and then fill out the form.
 * Click "Add Exercise" to add the exercise, click "Complete" to complete this exercise.
 * From the navbar, click "Dashboard" to go to the dashboard and view your stats!
+
+## How to install and run
+* Clone the repository to your local machine
+* Make sure your machine is running mongo `mongod`
+* CD into your project directory
+* run `npm install` to install at dependencies
+* run `node server.js` from project root to start the webserver.
+
+## Contact & Contributions
+This was for a class, no contributions requested.
