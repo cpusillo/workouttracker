@@ -1,5 +1,6 @@
 const db = require("../models");
 
+// Get our app for routing functionality
 module.exports = function (app) {
 
 // Route to get all workouts
@@ -20,7 +21,7 @@ app.get("/api/workouts", (req, res) => {
       });
   });
   
-  // Insert a workout
+  // Route to insert a workout
   app.post("/api/workouts", ({ body },res) => {
     db.Exercise.create(body).then((data) => {
       res.json(data);
@@ -32,12 +33,17 @@ app.get("/api/workouts", (req, res) => {
   // Make an update to the current _id
   app.put("/api/workouts/:id", (req, res) => {
     db.Exercise.findByIdAndUpdate(
-      { _id: req.params.id }, { exercises: req.body }
-    ).then((data) => { 
-      res.json(data);
-    }).catch(err => { 
-      console.log(err)
-    });
+      // get the current ID
+      req.params.id,
+      // "push" our body of request data into exercises object
+      { $push: { exercises: req.body } }
+    )
+      .then(data => {
+        res.json(data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   });
 
   // Route to get the workouts range 
@@ -47,7 +53,6 @@ app.get("/api/workouts", (req, res) => {
     }).catch(err => {
         console.log(err);
     });
-
 });
 
 }
