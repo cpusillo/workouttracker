@@ -14,6 +14,7 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
+// Comment line 18 out when deploying to heroku and uncomment the lines 20-29
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workoutsdb", { useNewUrlParser: true });
 
 // Uncomment the below when deploying to the Heroku app
