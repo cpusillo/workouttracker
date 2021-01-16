@@ -32,9 +32,13 @@ const ExerciseSchema = new Schema({
             type: Number
           }
       }
-    ]
+    ],
+    totalDuration: {
+      type: Number,
+      default: 0,
+    }
   });
   
-  const Exercise = mongoose.model("exercise", ExerciseSchema);
+  const Exercise = mongoose.model("Exercise", ExerciseSchema);
   
   module.exports = Exercise;
